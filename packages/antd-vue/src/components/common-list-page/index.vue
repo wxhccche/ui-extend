@@ -99,7 +99,6 @@ const selfGetPagedData = async (params: AnyObject) => {
   if (!request) {
     return
   }
-  console.log(props.loading)
   const [, data] = await vwp<PagedTableProps['pagedData']>(request(params), selfLoading)
   handlePagedData.value = data ? data : { rows: [], total: 0 }
 }

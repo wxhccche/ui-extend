@@ -9,11 +9,25 @@ import {
   Component,
   markRaw,
   ref,
-  resolveComponent
+  resolveComponent,
+  nextTick
 } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import { AnyObject, resolveProps, vueTypeProp, Option, Functional, StrOrNum } from '@wxhccc/ue-shared'
-import { ON_UI_UPDATE_MODEL_CHECKED, ON_UI_UPDATE_MODEL_VALUE, UI_MODEL_CHECKED, UI_MODEL_VALUE } from '@/ui-comps'
+import {
+  AnyObject,
+  resolveProps,
+  vueTypeProp,
+  Option,
+  Functional,
+  StrOrNum
+} from '@wxhccc/ue-shared'
+import {
+  UeForm,
+  ON_UI_UPDATE_MODEL_CHECKED,
+  ON_UI_UPDATE_MODEL_VALUE,
+  UI_MODEL_CHECKED,
+  UI_MODEL_VALUE
+} from '@/ui-comps'
 
 export interface CommonFieldProps<
   V = any,
@@ -63,9 +77,13 @@ export default defineComponent({
   setup(props, { attrs, emit, slots, expose }) {
     const field = ref()
 
+    const { onFieldBlur, onFieldChange } = UeForm.useInjectFormItemContext()
+
     const parseNumber = (value: string) => {
       return Number.isNaN(Number.parseFloat(value)) ? '' : Number.parseFloat(value)
     }
+
+    const triggerValidate = (event: 'blur' | 'change') => nextTick(event === 'blur' ? onFieldBlur : onFieldChange)
 
     const fieldValue = computed({
       get(): any {
@@ -84,6 +102,7 @@ export default defineComponent({
         if (handleVal !== props.modelValue) {
           emit('change', handleVal)
         }
+        triggerValidate('change')
       }
     })
 
@@ -128,7 +147,11 @@ export default defineComponent({
       const { value, label } = item
       const { dataItemRenader } = props
       const childNodes = dataItemRenader instanceof Function ? dataItemRenader(item, index) : label
-      return h(ChildField.value as DefineComponent, { ...item, index, key: `${value}` }, { default: () => childNodes })
+      return h(
+        ChildField.value as DefineComponent,
+        { ...item, index, key: `${value}` },
+        { default: () => childNodes }
+      )
     }
 
     const dataChildren = computed(() => {
@@ -161,9 +184,10 @@ export default defineComponent({
               if (attrs.onBlur instanceof Function) {
                 attrs.onBlur(...args)
               }
+              triggerValidate('blur')
             }
           }
-        : {}
+        : { onBlur: () => triggerValidate('blur') }
 
     // 将modelValue和其他props属性分开，避免不必要的计算
     const fieldProps = computed(() => {

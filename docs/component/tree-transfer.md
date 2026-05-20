@@ -14,7 +14,7 @@
 ### 带搜索功能
 
 ::: demo search-filter no-limit-lib
-@[code](@demo/tree-transfer/$LIB_DIR/search-filter.vue)
+@[code](@demo/tree-transfer/search-filter.vue)
 :::
 
 

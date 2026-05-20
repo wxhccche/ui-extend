@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig, mergeConfig, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import dts from 'unplugin-dts/vite'
 import baseConfig from '../../scripts/vite.base.config'
 
 const commonResolve: UserConfig['resolve'] = {
@@ -17,15 +18,19 @@ export default defineConfig(({ command }) => {
       resolve: commonResolve
     }
   } else {
-    return mergeConfig(baseConfig(), {
-      resolve: commonResolve,
-      build: {
-        lib: {
-          entry: resolve(__dirname, 'src/index.ts'),
-          name: 'UiExtendAntdVue',
-          fileName: (format) => (format === 'es' ? 'index.js' : 'index.umd.js')
+    return mergeConfig(
+      baseConfig(),
+      {
+        resolve: commonResolve,
+        build: {
+          lib: {
+            entry: resolve(__dirname, 'src/index.ts'),
+            name: 'UiExtendAntdVue',
+            fileName: (format) => (format === 'es' ? 'index.js' : 'index.umd.js')
+          }
         }
-      }
-    }, true)
+      },
+      true
+    )
   }
 })

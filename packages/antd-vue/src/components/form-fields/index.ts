@@ -12,6 +12,7 @@ import {
 } from 'vue'
 import { cloneDeep, get, isFunction, set } from 'lodash-es'
 import { AnyFunction, AnyObject, resolveProps, vueTypeProp } from '@wxhccc/ue-shared'
+import { UeCol, UeRow } from '@/ui-comps'
 import FormFieldItem from '@/components/form-field-item'
 import { getFormItemFullName, getFormItemName } from '@/utils/component'
 import { FormFieldsItem, FormFieldsOption, FormFieldsProps } from './types'
@@ -29,7 +30,10 @@ export default defineComponent({
   name: 'UeFormFields',
   props: {
     modelValue: vueTypeProp<NonNullable<FormFieldsProps['modelValue']>>(Object, () => ({})),
+    /** 表单配置项目 */
     items: vueTypeProp<NonNullable<FormFieldsProps['items']>>(Array, () => []),
+    /** 是否开启栅格布局 */
+    colspan: Boolean,
     delayUpdate: Boolean
   },
   emits: ['update:modelValue', 'change'],
@@ -105,9 +109,10 @@ export default defineComponent({
       }, 0)
     }
 
-    const fieldItems = computed<VNodeChild>(() =>
-      handledItems.value.map((item, index) => {
-        const { key, __onChange: onChange } = item
+    const fieldItems = computed<VNodeChild>(() => {
+      const { colspan } = props
+      const itemNodes = handledItems.value.map((item, index) => {
+        const { key, span = 24, __onChange: onChange } = item
         const handleName = getFormItemName(item)
         const itemKey = `${handleName || key || index}`
         const itemNamePath = getFormItemFullName(handleName, item.prevNames).join('.')
@@ -115,7 +120,7 @@ export default defineComponent({
         const userProps = (item.props ? resolveProps(item.props) : {}) as VNodeProps
 
         const itemProps = mergeProps(userProps, {
-          ref: (item) => formItemRefs.value[itemNamePath] = item,
+          ref: (item) => (formItemRefs.value[itemNamePath] = item),
           key: itemKey,
           modelValue: getValue(item),
           'onUpdate:modelValue': (val: AnyObject) => setValue(item, val)
@@ -137,9 +142,20 @@ export default defineComponent({
         if (onChange && fieldItemProps.field) {
           fieldItemProps.field.onChange = onChange
         }
-        return h(FormFieldItem, fieldItemProps)
+        const render = () => h(FormFieldItem, fieldItemProps)
+        const colProps = typeof span === 'number' ? { span } : span
+        return colspan ? h(UeCol, colProps, { default: render }) : render()
       })
-    )
+      return !!colspan
+        ? [
+            h(
+              UeRow,
+              { wrap: true, ...(typeof colspan === 'object' ? colspan : {}) },
+              { default: () => itemNodes }
+            )
+          ]
+        : itemNodes
+    })
 
     const changeHandler = (item: InnerFormFields, value: unknown) => {
       const { __watchers } = item

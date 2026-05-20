@@ -1,7 +1,6 @@
 <template>
   <a-form :model="formData" ref="form" :label-col="{ style: { width: '80px' } }" :wrapper-col="{ span: 12 }" >
-    <p>{{ formData }}</p>
-    <ue-form-fields :items="items" v-model="formData">
+    <ue-form-fields colspan :items="items" v-model="formData">
     </ue-form-fields>
     <a-form-item>
       <ue-form-btns :form="form" is-validate></ue-form-btns>
@@ -26,11 +25,11 @@ export default defineComponent({
     const form = ref()
     const formData = ref({})
     const items = [
-      createInputFormItem(createFFIRulesProps('活动名称'), 'name'),
+      createInputFormItem(createFFIRulesProps('活动名称'), 'name', undefined, { span: 12 }),
       createSelectFormItem(createFFIRulesProps('活动区域'), 'region', [
         { value: 'shanghai', label: '区域一' },
         { value: 'beijing', label: '区域二' }
-      ], '请选择活动区域'),
+      ], '请选择活动区域', { span: 12 }),
       {
         // prop: 'date', 注意这里没有设置prop属性，是为了让子表单项属性上提
         props: {
@@ -56,10 +55,11 @@ export default defineComponent({
               component: 'ATimePicker',
             }
           }
-        ]
+        ],
+        span: 14
       },
       /** 此函数也可用来处理自定义表单域 */
-      createFormFieldItem(Switch, '即时配送', 'delivery'),
+      createFormFieldItem(Switch, '即时配送', 'delivery', undefined, { span: 10 }),
       createCheckboxGroupFormItem('活动性质', 'type', [
         { value: 1, label: '美食/餐厅线下活动' },
         { value: 2, label: '地推活动' },

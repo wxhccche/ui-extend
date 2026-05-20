@@ -20,7 +20,6 @@ const CustomField = defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, { attrs, emit, expose }) {
-    console.log(props, attrs)
     const cascadeData = reactive({
       'shanghai': [
         { value: '01', label: '店铺主题活动' },

@@ -46,6 +46,7 @@ export const sidebar = (lib: 'antd-vue' | 'element'): SidebarConfig => ({
           text: 'Form',
           children: [
             { text: 'SearchInput 搜索输入框', link: 'search-input' },
+            ...(lib === 'antd-vue' ? [{ text: 'MultiLineInput 多行输入框', link: 'multi-line-input' }] : []),
             { text: 'TreeField 树表单域', link: 'tree-field' },
             { text: 'FormBtns 表单操作按钮', link: 'form-btns' },
             { text: 'CommonField 通用表单域', link: 'common-field' },

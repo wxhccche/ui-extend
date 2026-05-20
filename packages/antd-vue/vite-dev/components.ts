@@ -11,6 +11,7 @@ export default [
   'CommonField',
   'FormFieldItem',
   'FormFields',
+  'MultiLineInput',
   'FormBtns',
   'InfoTable',
   'PagedList',
@@ -19,6 +20,7 @@ export default [
   'Cropper',
   'VideoPlayer',
   'ScrollPane',
+  'ObjectArrayField',
   'SearchForm',
   'CommonListPage'
 ]

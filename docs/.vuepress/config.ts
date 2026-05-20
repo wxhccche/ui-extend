@@ -9,7 +9,9 @@ import { navbar, sidebar } from './theme-config'
 
 const { p: port, d: dist } = minimist(process.argv.slice(2))
 
-const lib = (port === 8081 || (!port && dist === 'dist/antd-vue')) ? 'antd-vue' : 'element'
+console.log(port, dist)
+
+const lib = (port === 8081 || (!port && dist !== '.vuepress/dist/element')) ? 'antd-vue' : 'element'
 
 export default defineUserConfig({
   base: `/ui-extend/${lib}/`,

@@ -5,7 +5,7 @@
 ### 基础用法
 
 :::demo base no-limit-lib
-@[code](@demo/search-input/$LIB_DIR/base.vue)
+@[code](@demo/search-input/base.vue)
 :::
 
 ::: tip 提示

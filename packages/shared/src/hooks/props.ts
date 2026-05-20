@@ -38,7 +38,7 @@ export const useVModel = <
   const { beforeEmit, supportInner, initValue, noEmit } = { ...options }
   const innerValue = ref<P[K]>()
 
-  if (initValue) {
+  if (initValue !== undefined) {
     innerValue.value = initValue
   }
 

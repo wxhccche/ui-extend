@@ -8,5 +8,9 @@ export {
   EditOutlined,
   LoadingOutlined,
   ArrowLeftOutlined,
-  ArrowRightOutlined
+  ArrowRightOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  PlusOutlined,
+  DeleteOutlined
 } from '@ant-design/icons-vue'

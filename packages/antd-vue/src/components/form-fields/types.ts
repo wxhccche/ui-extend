@@ -1,5 +1,6 @@
 import { DefineComponent } from 'vue'
 import { AnyObject, Functional, NamePath, Option } from '@wxhccc/ue-shared'
+import { UeColProps, UeRowProps } from '@/ui-comps'
 import { FormFieldItemOption } from '@/components/form-field-item/types'
 
 interface FieldsBaseOption {
@@ -17,6 +18,8 @@ interface FieldsBaseOption {
   clearValue?: boolean | string | number
   /** 级联数据替换时裁剪开始索引，默认为0，对于有“全部”选项的情况，可以设置为1 */
   spliceStart?: number
+  /** 组件开始栅格布局后，可以使用此属性来控制Col组件得布局，缺省时默认为24 */
+  span?: number | UeColProps
 }
 export interface CustomFieldsOption
   extends Pick<FormFieldItemOption, 'props' | 'name' | 'prevNames'>,
@@ -33,7 +36,10 @@ export type FormFieldsItem = CustomFieldsOption | FormFieldsOption
 
 export interface FormFieldsProps {
   modelValue?: AnyObject
+  /** 表单配置项目 */
   items: FormFieldsItem[]
+  /** 是否开启栅格布局，开启后，可以控制每个表单元素在一行内得宽度，也可以设置Row的props属性 */
+  colspan?: boolean | UeRowProps
   /** 是否需要延迟更新，主要用于账号密码表单，这类表单会被浏览器自动填充，自动填充时更新时序不可控 */
   delayUpdate?: boolean
 }

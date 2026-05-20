@@ -2,6 +2,7 @@ import { markRaw } from 'vue'
 import dayjs from 'dayjs'
 import {
   UeInput,
+  UeInputNumber,
   UeSelect,
   UeOption,
   UeRadioGroup,
@@ -11,6 +12,7 @@ import {
   UeCheckbox,
   UeFormItemProps as FormItemProps,
   UeInputProps as InputProps,
+  UeInputNumberProps as InputNumberProps,
   UeRadioGroupProps as RadioGroupProps,
   UeCheckboxProps as CheckboxGroupProps,
   UeSelectProps as SelectProps,
@@ -19,6 +21,7 @@ import {
 } from '@/ui-comps'
 import { mergeObj, AnyObject, StrOrNum, NamePath, SelectOption, Option } from '@wxhccc/ue-shared'
 import { CommonFieldProps } from '@/components/common-field'
+import type { FormFieldsItem } from '@/components/form-fields/types'
 import type { FormFieldItemProps } from '@/components/form-field-item/types'
 
 
@@ -34,6 +37,8 @@ export const createOption = (defaultVal: StrOrNum, label = '全部') => [
 
 
 type RuleRequired = boolean | string | [boolean | string | undefined, RuleObject['type']]
+
+type FormFieldItemOptions = FormFieldItemProps | FormFieldsItem
 
 /**
  * 生成带验证规则的FormFieldItem组件的props属性对象
@@ -65,7 +70,7 @@ export function createFFIRulesProps(
     label,
     rules: [...requiredRule, ...rules],
     ...others
-  }
+  } as FormItemProps
 }
 
 /**
@@ -82,8 +87,8 @@ export function createFormFieldItem<FP extends AnyObject = any, V = any>(
   labelOrProps?: StrOrProps<FormItemProps>,
   name?: NamePath,
   fieldExtra: Partial<CommonFieldProps<V, FP>> = {},
-  extraProps: Partial<FormFieldItemProps> = {}
-): FormFieldItemProps {
+  extraProps: Partial<FormFieldItemOptions> = {}
+): FormFieldItemOptions {
   return {
     props: typeof labelOrProps === 'string' ? { label: labelOrProps } : labelOrProps,
     field: {
@@ -92,7 +97,7 @@ export function createFormFieldItem<FP extends AnyObject = any, V = any>(
     },
     [FORM_ITEM_NAME]: name,
     ...extraProps
-  } as FormFieldItemProps
+  }
 }
 
 /**
@@ -108,7 +113,7 @@ export function createInputFormItem(
   labelOrProps: StrOrProps<FormItemProps>,
   name?: NamePath,
   phOrFieldProps?: StrOrProps<Partial<CommonFieldProps<string, InputProps>>>,
-  extraProps: Partial<FormFieldItemProps> = {}
+  extraProps: Partial<FormFieldItemOptions> = {}
 ) {
   const defPlaceholder = typeof labelOrProps === 'string' ? `请输入${labelOrProps}` : ''
   return createFormFieldItem(
@@ -126,14 +131,45 @@ export function createInputFormItem(
   )
 }
 
+/**
+ * 生成数字输入框表单项配置对象
+ * @param labelOrProps label 或FormItem组件props
+ * @param name 绑定数据的key
+ * @param phOrFieldProps placeholder或者CommonField组件的props
+ * @param extraProps FormFieldItem组件的其他props
+ * @param slots 输入框后缀文字或者完整的Input组件的插槽对象
+ * @returns FormFieldItem组件的props
+ */
+export function createInputNumberFormItem(
+  labelOrProps: StrOrProps<FormItemProps>,
+  name?: NamePath,
+  phOrFieldProps?: StrOrProps<Partial<CommonFieldProps<string, InputNumberProps>>>,
+  extraProps: Partial<FormFieldItemOptions> = {}
+) {
+  const defPlaceholder = typeof labelOrProps === 'string' ? `请输入${labelOrProps}` : ''
+  return createFormFieldItem(
+    UeInputNumber,
+    labelOrProps,
+    name,
+    phOrFieldProps
+      ? typeof phOrFieldProps === 'string'
+        ? {
+            placeholder: phOrFieldProps || defPlaceholder
+          } as Partial<CommonFieldProps<string, InputNumberProps>>
+        : phOrFieldProps
+      : undefined,
+    extraProps
+  )
+}
+
 interface CreateHasDataFormItem<FE = Partial<CommonFieldProps>> {
   (
     labelOrProps: StrOrProps<FormItemProps>,
     name?: NamePath,
     data?: SelectOption[] | Option[],
     fieldExtra?: FE,
-    extraProps?: Partial<FormFieldItemProps>
-  ): FormFieldItemProps
+    extraProps?: Partial<FormFieldItemOptions>
+  ): FormFieldItemOptions
 }
 
 /**
@@ -193,7 +229,7 @@ export function createSelectFormItem(
   name?: NamePath,
   data?: SelectOption[],
   phOrFieldProps?: StrOrProps<Partial<CommonFieldProps<StrOrNum, SelectProps>>>,
-  extraProps?: Partial<FormFieldItemProps>
+  extraProps?: Partial<FormFieldItemOptions>
 ) {
   const childComponent = markRaw(UeOption)
   return createFormFieldItem(
@@ -255,7 +291,7 @@ const { RangePicker } = UeDatePicker
   labelOrProps: StrOrProps<FormItemProps>,
   name?: NamePath,
   typeOrField: DateFieldConfig['type'] | DateFieldConfig = 'date',
-  extraProps?: Partial<FormFieldItemProps>
+  extraProps?: Partial<FormFieldItemOptions>
 ) {
   const typeProps = dateTypeProps()
   const {

@@ -11,6 +11,7 @@ export * from './types'
 
 export default defineComponent({
   name: 'UeTreeField',
+  inheritAttrs: false,
   props: {
     nodeKey: vueTypeProp<NonNullable<TreeFiledProps['nodeKey']>>(String, 'id'),
     checkMode: vueTypeProp<NonNullable<TreeFiledProps['checkMode']>>(String, 'two-way'),

@@ -120,7 +120,7 @@ export default defineComponent({
       // 剩余宽度平分计算
       return items.map((column, index) => {
         if (Array.isArray(column.actions)) {
-          column.customRender = (data: TableCellRow) => h(ActionBtns, { btns: column.actions, data })
+          column.customRender = (data: TableCellRow) => h(ActionBtns, { btns: column.actions, data: data.value, extraArgs: [data] })
         }
         const { minColumnWidth } = props
         let width = columnWidths[index]

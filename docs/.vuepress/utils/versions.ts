@@ -16,7 +16,7 @@ export function versionCompare (origin: string, target: string) {
 }
 
 const docsVersions = [
-  { "main": "1.0", "version": "1.0.0" },
+  { "main": "1.0", "version": "1.2.0" },
   { "main": "0.1", "version": "0.1.2" }
 ]
 

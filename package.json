@@ -1,5 +1,5 @@
 {
-  "name": "@wxhccc/ui-extend-monorepo",
+  "name": "@wxhccc/ui-extend",
   "version": "1.0.0-alpha.2",
   "description": "a library contains some componets base on ohter ui library.",
   "type": "module",
@@ -39,6 +39,7 @@
   "devDependencies": {
     "@ant-design/icons-vue": "^6.1.0",
     "@element-plus/icons-vue": "^2.0.10",
+    "@microsoft/api-extractor": "^7.58.7",
     "@types/lodash-es": "^4.17.6",
     "@types/minimist": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
@@ -47,7 +48,7 @@
     "@vue/eslint-config-typescript": "^11.0.2",
     "@wxhccc/es-util": "^2.1.0",
     "ali-oss": "^6.17.1",
-    "ant-design-vue": "^3.2.13",
+    "ant-design-vue": "^3.2.11",
     "cropperjs": "^1.5.12",
     "cross-env": "^5.2.1",
     "dayjs": "^1.11.5",
@@ -67,7 +68,7 @@
     "video.js": "^7.20.3",
     "viewerjs": "^1.10.5",
     "vite": "^3.1.6",
-    "vite-plugin-dts": "^2.0.2",
+    "vite-plugin-dts": "^3.9.1",
     "vue": "^3.2.40",
     "vue-tsc": "^1.0.9"
   },

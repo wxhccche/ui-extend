@@ -5,7 +5,7 @@
 ### 基础用法
 
 ::: demo base no-limit-lib
-@[code](@demo/form-btns/$LIB_DIR/base.vue)
+@[code](@demo/form-btns/base.vue)
 :::
 
 ### 有Form组件的场景和修改按钮顺序

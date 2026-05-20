@@ -2,12 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/**/*",
     "vite-dev/**/*"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }

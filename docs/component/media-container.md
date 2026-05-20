@@ -20,5 +20,11 @@
 @[code](@demo/media-container/$LIB_DIR/props-and-slots.vue)
 :::
 
+### 外部逻辑处理资源懒加载
+
+::: demo media-lazy-load
+@[code](@demo/media-container/$LIB_DIR/media-lazy-load.vue)
+:::
+
 
 !!!include(media-container/index.zh-CN.md)!!!

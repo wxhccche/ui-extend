@@ -3,6 +3,7 @@ import { Select } from 'ant-design-vue'
 export {
   Button as UeButton,
   Input as UeInput,
+  InputNumber as UeInputNumber,
   Alert as UeAlert,
   Select as UeSelect,
   message as UeMessage,
@@ -33,6 +34,7 @@ export const { Option: UeOption } = Select
 export type {
   ButtonProps as UeButtonProps,
   InputProps as UeInputProps,
+  InputNumberProps as UeInputNumberProps,
   AlertProps as UeAlertProps,
   SelectProps as UeSelectProps,
   CascaderProps as UeCascaderProps,
@@ -74,6 +76,8 @@ export { default as UeLoading } from './loading.vue'
 export { default as UeScrollbar } from './scrollbar.vue'
 
 export type { LoadingProps } from './loading.vue'
+
+export type { ButtonSize } from 'ant-design-vue/es/button'
 
 export * from './confirm'
 

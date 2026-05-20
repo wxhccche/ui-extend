@@ -9,7 +9,7 @@ const external = [
   'element-plus',
   '@element-plus/icons-vue',
   'ant-design-vue',
-  /ant-design-vue/,
+  /^ant-design-vue\/.*/,
   '@ant-design/icons-vue',
   '@wxhccc/es-util',
   'lodash-es',

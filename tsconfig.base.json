@@ -17,5 +17,6 @@
     "emitDeclarationOnly": true,
     "lib": ["esnext", "dom"],
     "types": ["vite/client"]
-  }
+  },
+  "exclude": ["node_modules"]
 }

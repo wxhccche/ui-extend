@@ -14,6 +14,8 @@ export interface MediaViewerProps {
   showBackgroud?: boolean
   /** 媒体文件尺寸，如果媒体源被其他组件引用，也可以用媒体元素的实际像素尺寸传入 */
   mediaSize?: Size
+  /** 是否始终渲染媒体容器相关节点，适用于需要懒加载的情况 */
+  containerForceRender?: boolean
   /** 是否在加载中 */
   loading?: boolean
 }
@@ -61,14 +63,23 @@ const containerSize = computed(() => {
 // 图片容器的尺寸样式
 const containerStyles = computed(() => {
   const { width, height } = containerSize.value
-  if (!width) return {}
+  if (!width) {
+    return props.containerForceRender ? { opacity: 0 } : {}
+  }
   return { width: `${width}px`, height: `${height}px` }
 })
+
 // 资源是否可用
 const mediaAccess = computed(() => !!(props.src && !state.isMediaError))
 
 /** 是否显示中间媒体容器 */
 const showMediaContainer = computed(() => selfSize.value.width && handleMediaSize.value.width)
+
+const isMediaContainerRender = computed(() => props.containerForceRender || showMediaContainer.value)
+
+const coverStyles = computed(() => {
+  return props.containerForceRender && !showMediaContainer.value ? { opacity: 0 } : {}
+})
 
 /**
  * 加载图片并获取图片信息
@@ -116,7 +127,7 @@ export default { name: 'UeMediaContainer' }
   >
     <template v-if="!isMediaError">
       <div
-        v-show="selfSize.width && innerMediaSize.width"
+        v-show="isMediaContainerRender"
         class="media-container"
         :style="containerStyles"
       >
@@ -135,7 +146,7 @@ export default { name: 'UeMediaContainer' }
             @error="mediaLoadError"
           />
         </template>
-        <div v-if="showMediaContainer" class="media-content-cover">
+        <div v-if="isMediaContainerRender" v-show="isMediaContainerRender" class="media-content-cover" :style="coverStyles">
           <slot :size="containerSize" :media-size="handleMediaSize"></slot>
         </div>
       </div>

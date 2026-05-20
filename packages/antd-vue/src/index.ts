@@ -8,6 +8,7 @@ import CommonField from '@/components/common-field'
 import FormBtns from '@/components/form-btns'
 import FormFieldItem from '@/components/form-field-item'
 import FormFields from '@/components/form-fields'
+import MultiLineInput from '@/components/multi-line-input'
 import InfoTable from '@/components/info-table'
 import CommonListPage from '@/components/common-list-page'
 import PagedTable from '@/components/paged-table'
@@ -21,6 +22,7 @@ import TreeField from '@/components/tree-field'
 import ScrollPane from '@/components/scroll-pane'
 import TreeTransfer from '@/components/tree-transfer'
 import Cropper from '@/components/cropper'
+import ObjectArrayField from '@/components/object-array-field'
 
 export type { LoadingProps } from './ui-comps/loading.vue'
 export * from '@/components/action-btns'
@@ -30,6 +32,7 @@ export * from '@/components/common-field'
 export * from '@/components/form-btns'
 export * from '@/components/form-field-item'
 export * from '@/components/form-fields'
+export * from '@/components/multi-line-input'
 export * from '@/components/info-table'
 export * from '@/components/common-list-page'
 export * from '@/components/paged-table'
@@ -43,6 +46,7 @@ export * from '@/components/tree-field'
 export * from '@/components/scroll-pane'
 export * from '@/components/tree-transfer'
 export * from '@/components/cropper'
+export * from '@/components/object-array-field'
 
 export * from '@wxhccc/ue-shared'
 export * from '@/optionals'
@@ -56,6 +60,7 @@ const components = {
   FormBtns,
   FormFieldItem,
   FormFields,
+  MultiLineInput,
   InfoTable,
   MultiAlert,
   PagedList,
@@ -68,12 +73,13 @@ const components = {
   RemoteCascader,
   ScrollPane,
   TreeTransfer,
-  Cropper
+  Cropper,
+  ObjectArrayField
 }
 
 const install = function (app: App) {
   Object.entries(components).forEach(([_key, component]) =>
-    app.component(component.name, component)
+    app.component(component.name as string, component)
   )
   const provideKeys = ['UeLoadingOptions', 'UeConfirmOptions', 'UeDefaultPageSize']
   provideKeys.forEach((key) => app.provide(key, undefined))
@@ -88,6 +94,7 @@ export {
   FormBtns,
   FormFieldItem,
   FormFields,
+  MultiLineInput,
   InfoTable,
   MultiAlert,
   PagedList,
@@ -100,7 +107,8 @@ export {
   RemoteCascader,
   ScrollPane,
   TreeTransfer,
-  Cropper
+  Cropper,
+  ObjectArrayField
 }
 
 export default {

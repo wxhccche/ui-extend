@@ -183,7 +183,7 @@ export default defineComponent({
     const proxyMethods = useProxyInstanceMethods(formItemRef, ['resetField', 'clearValidate'])
 
     const getFormItemRefs = () => {
-      return { ROOT: formItemRef.value,  ...childrenItemsRef.value }
+      return { ROOT: formItemRef.value, ...childrenItemsRef.value }
     }
 
     expose({ ...proxyMethods, getFormItemRefs })
@@ -194,7 +194,7 @@ export default defineComponent({
         UeFormItem,
         mergeProps(
           {
-            class: 'ue-form-field-item',
+            class: ['ue-form-field-item', { 'ue-form-text-item': !!handledItemText.value }],
             key: `${handleName.value}`,
             ref: formItemRef
           },

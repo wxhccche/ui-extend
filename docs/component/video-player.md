@@ -6,8 +6,8 @@
 
 本示例裁剪后将在新窗口打开裁剪后的图片
 
-::: demo Base
-@[code](@demo/video-player/$LIB_DIR/Base.vue)
+::: demo base
+@[code](@demo/video-player/$LIB_DIR/base.vue)
 :::
 
 <!-- ### 使用视频指定帧作为预览图
