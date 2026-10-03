@@ -26,6 +26,12 @@
  *   node scripts/release.mjs --publish              校验依赖关系后发布（已发布的版本由 pnpm 跳过）
  *   node scripts/release.mjs --publish --dry-run    发布预演
  *   node scripts/release.mjs --publish --pkg @wxhccc/ue-element    只发布指定包
+ *   node scripts/release.mjs --publish --allow-pending             目标版本卡在 npm 的
+ *                                                                  Validating 校验里时跳过相应校验
+ *
+ * 注意 npm 的发布后审核（Validating）：版本被接受后、审核结束前，registry 的读接口
+ * 查不到它，`npm i` 也装不到。此时不要重发（会报 already published），等审核完成即可。
+ * 发布命令退出码为 0 即代表发布已被接受；脚本的回查只作提示，不会因此判失败。
  *
  * 涨版本规则（`--bump`）：抬第二位，prerelease 计数器归零。
  *   1.2.3 -> 1.3.0    1.0.0-beta.6 -> 1.1.0-beta.0
@@ -40,6 +46,8 @@ const args = process.argv.slice(2)
 const has = (name) => args.includes(name)
 const MODE = has('--bump') ? 'bump' : has('--publish') ? 'publish' : 'plan'
 const DRY_RUN = has('--dry-run')
+/** 确认目标版本只是卡在 npm 的 Validating 校验里时，用它跳过「已在 registry 可见」这一项校验 */
+const ALLOW_PENDING = has('--allow-pending')
 
 /** `--pkg <name>` / `--pkg=<name>`，可重复 */
 const PKG_FILTERS = (() => {
@@ -49,6 +57,21 @@ const PKG_FILTERS = (() => {
     else if (args[i].startsWith('--pkg=')) out.push(args[i].slice('--pkg='.length))
   }
   return out.filter(Boolean)
+})()
+
+/**
+ * `--otp <code>`：把一次性验证码透传给 npm。
+ *
+ * `npm login` 写入的是短期会话 token（约两小时过期），长期使用应当换成
+ * 长期有效的 Granular Access Token。而 npm 正在限制「bypass 2FA」的 token 用于
+ * 直接发布，所以发布时可能仍要求输入验证码——那就用这个参数带上。
+ */
+const OTP = (() => {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--otp') return args[++i]
+    if (args[i].startsWith('--otp=')) return args[i].slice('--otp='.length)
+  }
+  return null
 })()
 
 const sh = (cmd, inherit = false) =>
@@ -140,13 +163,38 @@ function workspaceDirs() {
   return [...dirs]
 }
 
-function publishedVersions(name) {
-  try {
-    const parsed = JSON.parse(sh(`pnpm view ${name} versions --json`))
-    return Array.isArray(parsed) ? parsed : [parsed]
-  } catch {
-    return [] // 还没发布过
+/**
+ * 直接向 registry 查询已发布版本。
+ *
+ * 刻意不用 `pnpm view`：它走 pnpm 的本地元数据缓存，可能拿到过期的版本列表，
+ * 让「依赖版本是否已发布」的判断失真。这里直接请求 registry 并显式要求不使用缓存，
+ * 免得把「刚发布完但缓存还旧」误判成「没发布」，或者反过来。
+ */
+async function publishedVersions(name) {
+  const url = `https://registry.npmjs.org/${name.replace('/', '%2F')}`
+  let lastError
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { 'cache-control': 'no-cache', pragma: 'no-cache' } })
+      if (res.status === 404) return [] // 还没发布过
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const body = await res.json()
+      return Object.keys(body.versions ?? {})
+    } catch (error) {
+      lastError = error
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)))
+    }
   }
+  throw new Error(`查询 ${name} 的 registry 元数据失败：${lastError?.message ?? '未知错误'}`)
+}
+
+/** 等某个版本出现在 registry 上（容忍发布后极短的可见性延迟） */
+async function waitForVersion(name, version, { attempts = 3, delayMs = 3000 } = {}) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    if ((await publishedVersions(name)).includes(version)) return true
+    if (attempt < attempts - 1) await new Promise((resolve) => setTimeout(resolve, delayMs))
+  }
+  return false
 }
 
 /** 找出「package.json 里版本号等于该已发布版本」的最新一个提交 */
@@ -182,7 +230,7 @@ const packages = []
 for (const dir of workspaceDirs()) {
   const json = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8'))
   if (json.private === true) continue
-  const published = publishedVersions(json.name)
+  const published = await publishedVersions(json.name)
   const released = maxVersion(published)
   const commit = released ? releaseCommit(dir, released) : null
   packages.push({
@@ -274,6 +322,7 @@ if (MODE === 'publish') {
 
   // 守卫只看 publishSet —— 单独发一个包时，依赖包没跟着发就会被拦住
   const problems = []
+  const pendingDeps = []
   for (const p of publishSet) {
     for (const [dep, range] of Object.entries(p.dependencies)) {
       if (!String(range).startsWith('workspace:')) continue
@@ -282,16 +331,34 @@ if (MODE === 'publish') {
         problems.push(`${p.name} 依赖 ${dep}，但它不在当前工作区里`)
         continue
       }
-      const beingPublished = publishSet.some((x) => x.name === dep)
-      const alreadyOnRegistry = target.published.includes(target.version)
-      if (!beingPublished && !alreadyOnRegistry) {
-        problems.push(
-          `${p.name} 依赖 ${dep}@${range}，发布时会被改写成 ^${target.version}；但 ` +
-            `${dep}@${target.version} 既不在本次发布范围里、也不在 registry 上 —— 使用方会装不上。\n` +
-            `      先单独发布它：pnpm release:${dep === '@wxhccc/ue-shared' ? 'shared' : '<包名>'}，或把两个包一起发：pnpm release`
-        )
+      // 目标包如果也在本次发布范围内，就不必要求它此刻已经可见
+      if (publishSet.some((x) => x.name === dep)) continue
+
+      // 目标版本可能刚发布完、还在 npm 的 Validating 校验阶段（这期间 registry 读接口查不到），
+      // 也可能确实没发布成功。短暂重试以排除可见性抖动。
+      const onRegistry =
+        target.published.includes(target.version) || (await waitForVersion(dep, target.version))
+      if (onRegistry) continue
+
+      if (ALLOW_PENDING) {
+        pendingDeps.push(`${p.name} -> ${dep}@${target.version}`)
+        continue
       }
+
+      problems.push(
+        `${p.name} 依赖 ${dep}@${range}，发布时会被改写成 ^${target.version}，` +
+          `但 ${dep}@${target.version} 当前不在 registry 上。两种可能：\n` +
+          `      ① 它已经发布、只是还在 npm 的 Validating 校验阶段 —— 去 npmjs.com 看该版本有没有 Validating 徽标，\n` +
+          `         有就等它校验完；确认只是在等待时，可以加 --allow-pending 跳过这一项校验（风险见下）\n` +
+          `      ② 它确实没发布成功 —— 执行 pnpm release:${dep === '@wxhccc/ue-shared' ? 'shared' : '<包名>'}，或把两个包一起发：pnpm release`
+      )
     }
+  }
+
+  if (pendingDeps.length) {
+    console.log('  ⚠ 已用 --allow-pending 跳过「目标版本尚未在 registry 可见」的校验：')
+    for (const item of pendingDeps) console.log(`    - ${item}`)
+    console.log('    风险：若该版本最终校验失败，使用方会装不到它。\n')
   }
 
   if (problems.length) {
@@ -321,8 +388,55 @@ if (MODE === 'publish') {
 
   // 只发布本次范围内的包：pnpm 侧用 --filter 精确指定，绝不顺带发另一个库
   const scope = selected.length === packages.length ? '' : `${selected.map((p) => `--filter ${p.name}`).join(' ')} `
-  const cmd = `pnpm -r ${scope}publish --access public --no-git-checks${DRY_RUN ? ' --dry-run' : ''}`
-  console.log(`  执行：${cmd}\n`)
-  sh(cmd, true)
-  console.log('')
+  const otpFlag = OTP ? ` --otp ${OTP}` : ''
+  const cmd = `pnpm -r ${scope}publish --access public --no-git-checks${otpFlag}${DRY_RUN ? ' --dry-run' : ''}`
+  // 回显时把验证码打码（它会留在会话日志里，没必要）
+  console.log(`  执行：${OTP ? cmd.replace(OTP, '******') : cmd}\n`)
+  try {
+    sh(cmd, true)
+  } catch {
+    // 具体原因（EOTP / 权限 / 网络）已经打在 npm 自己的输出里
+    console.log(
+      '\n  ✗ 发布命令以非 0 退出，没有发布成功。原因见上面的 npm 输出。\n' +
+        '    常见情况与处理：\n' +
+        '      · EOTP「This operation requires a one-time password」\n' +
+        '        当前用的是 npm login 的短期会话 token，它不授权写操作，需要再做一次\n' +
+        '        浏览器授权（npm 打印的那个链接）。想免掉这一步可换长期 Granular Access\n' +
+        '        Token，详见 README「认证」（npm 现在更推荐用 Trusted Publishing）。\n' +
+        '      · 404 Not Found（PUT ...）：token 没有该 scope 的写权限，或已过期。\n' +
+        '      · 确实启用了 TOTP 的账号：用 --otp <6位码> 把验证码传进来。\n'
+    )
+    process.exit(1)
+  }
+
+  if (DRY_RUN) {
+    console.log('\n  （dry-run：只打包，未真正上传）\n')
+    process.exit(0)
+  }
+
+  // 关键：发布后回查 registry，确认版本真的落地。
+  // 不能只看退出码——否则「命令看似成功、其实没发上去」会被当成发布完成。
+  console.log('  回查 registry，确认版本已落地 …')
+  const notLanded = []
+  for (const p of publishSet) {
+    if (await waitForVersion(p.name, p.version, { attempts: 6, delayMs: 5000 })) {
+      console.log(`    ✓ ${p.name}@${p.version}`)
+    } else {
+      console.log(`    ? ${p.name}@${p.version} 暂未在 registry 上可见`)
+      notLanded.push(`${p.name}@${p.version}`)
+    }
+  }
+  if (notLanded.length) {
+    // npm 现在会对新发布的版本做发布后审核（npmjs.com 上显示 Validating）。审核结束前
+    // registry 的读接口查不到该版本、`npm i` 也装不到，但这不代表发布失败——
+    // npm 已以 0 退出，就说明发布已被接受。所以这里只提示、不算失败。
+    console.log(
+      `\n  · 发布已被 npm 接受，但以下版本暂时还查不到：${notLanded.join(', ')}\n` +
+        '    npm 会对新发布版本做发布后审核（npmjs.com 上显示 Validating）。审核结束前\n' +
+        '    registry 读接口查不到它，`npm i` 也装不到；审核完会自动可见。\n' +
+        '    建议去 npmjs.com 看一眼该版本是否标着 Validating 作为确认。\n'
+    )
+    process.exit(0)
+  }
+  console.log('\n  ✓ 全部确认已发布（registry 上已可见）\n')
 }
