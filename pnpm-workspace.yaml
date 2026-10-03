@@ -1,0 +1,12 @@
+packages:
+  - 'packages/*'
+  - 'docs'
+
+# pnpm 10 起默认不执行依赖的安装脚本。esbuild 必须跑完 postinstall 才能提供平台二进制，
+# vue-demi 必须跑完才能生成 Vue 版本适配层，@parcel/watcher 需要下载预编译产物。
+# 少了这几项，安装看起来是成功的，但真正构建时才以各种奇怪的方式失败。
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - esbuild
+  - vue-demi

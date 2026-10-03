@@ -35,6 +35,15 @@ export default defineComponent({
       return typeof loadingProps === 'string' ? { text: loadingProps } : loadingProps
     })
 
+    /**
+     * 模板里的 `pagination` 同时撞上同名 prop（boolean | UePaginationProps），
+     * 类型联合里含 boolean 时 `v-bind` 无法展开（TS2698）。这里单独收敛成对象再绑定。
+     */
+    const paginationProps = computed<AnyObject>(() => {
+      const { value } = pagination
+      return value && typeof value === 'object' ? value : {}
+    })
+
     const hasSlot = computed(() => {
       const { layout } = pagination.value || {}
       return layout?.includes('slot')
@@ -42,7 +51,7 @@ export default defineComponent({
 
     context.expose({ getStoreData, clearStoreData })
 
-    return { pagination, hasSlot, handledLoading, dataList }
+    return { pagination, paginationProps, hasSlot, handledLoading, dataList }
   }
 })
 </script>
@@ -55,7 +64,7 @@ export default defineComponent({
       </div>
     </div>
     <div class="pagination-container">
-      <ue-pagination v-if="pagination" v-bind="pagination">
+      <ue-pagination v-if="pagination" v-bind="paginationProps">
         <template v-if="hasSlot" #default>
           <slot name="paginationLayout"></slot>
         </template>

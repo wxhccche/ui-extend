@@ -1,16 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "skipLibCheck": true,
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "ignoreDeprecations": "6.0"
+      "@/*": ["./src/*"],
+      "vue-types": ["./node_modules/vue-types"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "vite-dev/**/*"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*", "vite-dev/**/*"]
 }

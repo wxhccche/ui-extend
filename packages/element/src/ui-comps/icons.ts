@@ -1,4 +1,4 @@
-import { DefineComponent, defineComponent, h, AllowedComponentProps } from 'vue'
+import { Component, defineComponent, h, AllowedComponentProps } from 'vue'
 import { ElIcon, IconProps } from 'element-plus'
 import {
   Search,
@@ -15,7 +15,9 @@ import {
 
 const createIconComponent = (
   name: string,
-  component: DefineComponent,
+  // 用 Component 而不是 DefineComponent：@element-plus/icons-vue 的图标组件把
+  // data 参数声明为 void，与 DefineComponent 的默认 {} 不兼容（TS2345）。
+  component: Component,
   props?: IconProps & AllowedComponentProps
 ) =>
   defineComponent({

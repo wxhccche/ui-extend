@@ -14,7 +14,8 @@ import {
   UeCheckboxProps as CheckboxGroupProps,
   UeSelectProps as SelectProps,
   RuleObject,
-  FORM_ITEM_NAME
+  FORM_ITEM_NAME,
+  UeTableRow
 } from '@/ui-comps'
 import { AnyObject, mergeObj, NamePath, SelectOption, StrOrNum, Option } from '@wxhccc/ue-shared'
 import { DataTableColumn } from '@/components/data-table'
@@ -284,7 +285,7 @@ export function createDateFormItem(
  * @param others 其他属性
  * @returns PagedTbColumnProps
  */
-export function createTableColumn<T = any>(
+export function createTableColumn<T extends UeTableRow = any>(
   title: string,
   dataIndex?: StrOrNum,
   others?: DataTableColumn<T>

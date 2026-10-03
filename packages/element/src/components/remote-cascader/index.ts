@@ -60,6 +60,12 @@ export default defineComponent({
     } as Required<UeCascaderFields>))
 
     const onUpdateValue = (value?: ModelValue) => (handleValue.value = value)
+    /**
+     * ElCascader 的 `onUpdate:modelValue` 声明为接受更宽的 CascaderValue（单选时可能是标量），
+     * 比本组件对外声明的 ModelValue 更宽，因此直接传 onUpdateValue 会因参数逆变而报 TS2769。
+     * 按上游签名转发即可，运行时行为完全不变。
+     */
+    const cascaderOnUpdateValue = onUpdateValue as (value: unknown) => void
 
     const handleItemChange = async (value: ModelValue) => {
       let lastItem = state.options
@@ -183,11 +189,12 @@ export default defineComponent({
         UeCascader,
         {
           [UI_MODEL_VALUE]: handleValue.value,
-          [ON_UI_UPDATE_MODEL_VALUE]: onUpdateValue,
+          [ON_UI_UPDATE_MODEL_VALUE]: cascaderOnUpdateValue,
           options: state.options,
           props: propsOptions.value,
           disabled: state.initLoading,
-          onChange: getFullValue
+          // 与 cascaderOnUpdateValue 同理：上游 onChange 的参数类型比 ModelValue 宽
+          onChange: getFullValue as (value: unknown) => void
         },
         slots
       )

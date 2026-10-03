@@ -19,7 +19,6 @@ import SearchForm from '@/components/search-form'
 import SearchInput from '@/components/search-input'
 import Ticker from '@/components/ticker'
 import TreeField from '@/components/tree-field'
-// import VideoPlayer from '@/components/video-player'
 import ScrollPane from '@/components/scroll-pane'
 import TreeTransfer from '@/components/tree-transfer'
 import Cropper from '@/components/cropper'
@@ -76,7 +75,7 @@ const components = {
 
 const install = function (app: App) {
   Object.entries(components).forEach(([_key, component]) =>
-    app.component(component.name, component)
+    app.component(component.name as string, component)
   )
   const provideKeys = ['UeLoadingOptions', 'UeConfirmOptions', 'UeDefaultPageSize']
   provideKeys.forEach((key) => app.provide(key, undefined))

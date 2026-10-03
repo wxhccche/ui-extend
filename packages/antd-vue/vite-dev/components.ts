@@ -18,7 +18,6 @@ export default [
   'PagedTable',
   'TreeTransfer',
   'Cropper',
-  'VideoPlayer',
   'ScrollPane',
   'ObjectArrayField',
   'SearchForm',

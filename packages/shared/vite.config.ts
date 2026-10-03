@@ -1,44 +1,37 @@
 import { resolve } from 'path'
-import { defineConfig, UserConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import dts from 'vite-plugin-dts'
+import { defineConfig, mergeConfig } from 'vite'
+import baseConfig, { globals } from '../../scripts/vite.base.config'
 
-/** 外部依赖 */
-const external = [
-  'vue',
-  '@wxhccc/es-util',
-  'lodash-es',
-  'dayjs',
-  'store2'
-]
+const srcRoot = resolve(__dirname, 'src')
+const distRoot = resolve(__dirname, 'dist')
+const libName = 'UiExtendShared'
 
-const globals = {
-  vue: 'Vue',
-  '@wxhccc/es-util': 'EsUtil',
-  'lodash-es': '_',
-  dayjs: 'dayjs',
-  store2: 'store'
-}
-
-export default defineConfig({
-  plugins: [vue(), dts({
-    entryRoot: resolve(__dirname),
-    rollupTypes: true,
-    copyDtsFiles: true
-  })],
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'UiExtendShared',
-      fileName: (format) => (format === 'es' ? 'index.js' : 'index.umd.js')
-    },
-    rollupOptions: {
-      external,
-      output: {
-        exports: 'named',
-        globals
+export default defineConfig(() => {
+  return mergeConfig(baseConfig(), {
+    build: {
+      emptyOutDir: true,
+      lib: {
+        entry: resolve(srcRoot, 'index.ts'),
+        name: libName
+      },
+      rollupOptions: {
+        output: [
+          {
+            format: 'es',
+            dir: distRoot,
+            entryFileNames: 'index.js',
+            exports: 'named'
+          },
+          {
+            format: 'umd',
+            dir: distRoot,
+            entryFileNames: 'index.umd.js',
+            name: libName,
+            exports: 'named',
+            globals
+          }
+        ]
       }
     }
-  }
-}
-)
+  })
+})

@@ -1,9 +1,9 @@
 import { Slot } from 'vue'
 import { Functional, StrOrNum } from '@wxhccc/ue-shared'
 import { ActionBtnItem } from '@/components/action-btns/type'
-import { UeTableColumnProps } from '@/ui-comps'
+import { UeTableColumnProps, UeTableRow } from '@/ui-comps'
 
-export interface DataTableColumn<T = any> extends UeTableColumnProps<T> {
+export interface DataTableColumn<T extends UeTableRow = any> extends UeTableColumnProps<T> {
   key?: StrOrNum
   /** 是否隐藏（不渲染）当前列，可以为boolean类型值，也可以用函数动态控制。 */
   hide?: Functional<boolean>

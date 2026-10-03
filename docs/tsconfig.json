@@ -1,24 +1,7 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "allowJs": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationDir": "dist",
-    "emitDeclarationOnly": true,
-    "lib": ["esnext", "dom"],
-    "types": ["vite/client", "@vuepress/client/types"],
-    "baseUrl": "."
+    "types": ["vite/client", "@vuepress/client/types"]
   },
   "include": [
     ".vuepress/**/*.ts",

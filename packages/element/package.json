@@ -1,26 +1,41 @@
 {
   "name": "@wxhccc/ue-element",
-  "version": "1.0.0-beta.6",
+  "version": "1.1.0",
   "description": "a library contains some componets base on element-plus",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/wxhccc/ui-extend.git"
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./components/*": {
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build"
+    "build": "pnpm run build:js && pnpm run build:types",
+    "build:js": "vite build && vite build -c vite.umd.config.ts",
+    "build:types": "vue-tsc -p tsconfig.build.json && node ../../scripts/fix-dts-paths.mjs dist \"@wxhccc/ue-element\"",
+    "typecheck": "vue-tsc -p tsconfig.json"
   },
-  "main": "dist/index.umd.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./dist/*": "./dist/*"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wxhccc/ui-extend.git"
   },
   "keywords": [
     "ui-extend",
@@ -36,20 +51,26 @@
   },
   "homepage": "https://wxhccc.github.io/ui-extend/",
   "dependencies": {
+    "@wxhccc/es-util": "^2.1.0",
     "@wxhccc/ue-shared": "workspace:^",
     "copy-to-clipboard": "^3.3.2",
-    "cropperjs": "^1.5.3"
-  },
-  "devDependencies": {
-    "async-validator": "^4.2.5"
+    "cropperjs": "^1.5.3",
+    "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
     "@element-plus/icons-vue": "^2.0.6",
     "element-plus": "^2.2.11",
-    "video.js": "^7.0.0",
     "vue": "^3.2.40"
   },
-  "files": [
-    "dist"
-  ]
+  "devDependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "@types/lodash-es": "^4.17.6",
+    "@vitejs/plugin-vue": "^3.1.2",
+    "element-plus": "^2.2.17",
+    "sass": "^1.55.0",
+    "typescript": "^6.0.3",
+    "vite": "^3.1.6",
+    "vue": "^3.5.34",
+    "vue-tsc": "^3.3.1"
+  }
 }

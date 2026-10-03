@@ -1,13 +1,33 @@
 {
   "name": "@wxhccc/ue-shared",
-  "version": "1.0.0-beta.6",
-  "description": "a library contains some componets base on element-plus",
+  "version": "1.1.0",
+  "description": "ui-extend 的公共类型与工具（hooks、formatter、storage）",
   "type": "module",
-  "main": "dist/index.umd.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "vite build"
+    "dev": "vite build --watch",
+    "build": "pnpm run build:js && pnpm run build:types",
+    "build:js": "vite build",
+    "build:types": "vue-tsc -p tsconfig.build.json && node ../../scripts/fix-dts-paths.mjs dist",
+    "typecheck": "vue-tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -19,17 +39,28 @@
     "utils",
     "shared"
   ],
-  "files": [
-    "dist"
-  ],
   "author": "wxhccc",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wxhccc/ui-extend/issues"
   },
-  "sideEffects": false,
   "homepage": "https://wxhccc.github.io/ui-extend/",
   "dependencies": {
+    "@wxhccc/es-util": "^2.1.0",
+    "dayjs": "^1.11.5",
+    "lodash-es": "^4.17.21",
     "store2": "^2.9.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.2.40"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
+    "@vitejs/plugin-vue": "^3.1.2",
+    "sass": "^1.55.0",
+    "typescript": "^6.0.3",
+    "vite": "^3.1.6",
+    "vue": "^3.5.34",
+    "vue-tsc": "^3.3.1"
   }
 }

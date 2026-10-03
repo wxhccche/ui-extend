@@ -1,13 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    } 
+      "@/*": ["./src/*"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "vite-dev/**/*"
-  ]
+  "include": ["src/**/*", "vite-dev/**/*"]
 }

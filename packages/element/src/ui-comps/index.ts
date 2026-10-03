@@ -58,7 +58,7 @@ export type UeFormInstance = any
 
 export type { TableColumnCtx as UeTableColumnProps } from 'element-plus/es/components/table/src/table-column/defaults'
 
-export type { TableProps as UeTableProps } from 'element-plus/es/components/table/src/table/defaults'
+export type { TableProps as UeTableProps, DefaultRow as UeTableRow } from 'element-plus/es/components/table/src/table/defaults'
 
 export type { TreeComponentProps as UeTreeProps, TreeNodeData as TreeDataNode } from 'element-plus/es/components/tree/src/tree.type'
 
