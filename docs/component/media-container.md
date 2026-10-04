@@ -22,8 +22,8 @@
 
 ### 外部逻辑处理资源懒加载
 
-::: demo media-lazy-load
-@[code](@demo/media-container/$LIB_DIR/media-lazy-load.vue)
+::: demo media-lazy-load no-limit-lib
+@[code](@demo/media-container/media-lazy-load.vue)
 :::
 
 

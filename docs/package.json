@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "a library contains some componets base on ohter ui library.",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "pnpm run dev:antd-vue",
-    "dev:antd-vue": "vuepress dev -p 8081",
-    "dev:element": "vuepress dev -p 8082",
+    "dev:antd-vue": "vitepress dev --port 8081",
+    "dev:element": "vitepress dev --port 8082",
     "build": "pnpm run build:antd-vue && pnpm run build:element",
-    "build:antd-vue": "vuepress build",
-    "build:element": "vuepress build -d .vuepress/dist/element",
+    "build:antd-vue": "vitepress build",
+    "build:element": "vitepress build --outDir .vitepress/dist/element",
+    "preview": "vitepress preview",
     "docs:publish": "sh deploy.sh",
     "typecheck": "vue-tsc -p tsconfig.json",
     "typecheck:dist": "pnpm run typecheck:dist:antd-vue && pnpm run typecheck:dist:element",
@@ -18,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wxhccc/ui-extend.git"
+    "url": "git+ssh://git@github.com/wxhccche/ui-extend.git"
   },
   "keywords": [
     "ui-extend",
@@ -27,22 +29,18 @@
     "element-ui",
     "utils"
   ],
-  "author": "wxhccc",
+  "author": "wxhccche",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wxhccc/ui-extend/issues"
+    "url": "https://github.com/wxhccche/ui-extend/issues"
   },
-  "homepage": "https://wxhccc.github.io/ui-extend/",
+  "homepage": "https://wxhccche.github.io/ui-extend/",
   "devDependencies": {
     "@ant-design/icons-vue": "^6.1.0",
     "@element-plus/icons-vue": "^2.0.10",
     "@types/lodash-es": "^4.17.6",
     "@types/markdown-it": "^12.2.3",
     "@types/minimist": "^1.2.2",
-    "@vuepress/client": "2.0.0-beta.61",
-    "@vuepress/plugin-container": "2.0.0-beta.61",
-    "@vuepress/plugin-docsearch": "2.0.0-beta.61",
-    "@vuepress/plugin-register-components": "2.0.0-beta.61",
     "@wxhccc/ue-antd-vue": "workspace:*",
     "@wxhccc/ue-element": "workspace:*",
     "@wxhccc/ue-shared": "workspace:*",
@@ -53,11 +51,11 @@
     "markdown-it-container": "^3.0.0",
     "markdown-it-include": "^2.0.0",
     "minimist": "^1.2.6",
+    "sass": "^1.55.0",
     "typescript": "^6.0.3",
-    "vite": "^3.1.6",
+    "vite": "^5.4.21",
+    "vitepress": "^1.6.4",
     "vue": "^3.5.34",
-    "vue-tsc": "^3.3.1",
-    "vuepress": "2.0.0-beta.61",
-    "vuepress-plugin-clean-urls": "^1.1.2"
+    "vue-tsc": "^3.3.1"
   }
 }

@@ -1,0 +1,57 @@
+:root {
+  --content-width: 960px;
+}
+
+/**
+ * CodeGroup（VitePress 没有，见 theme/components/code-group.ts）。
+ * 外观对齐 VitePress 默认主题的代码块：同样的圆角、边框与背景变量。
+ * 面板里的代码块自身已带边框，这里把重复边框去掉，避免出现「双框」。
+ */
+.ue-code-group {
+  margin: 16px 0;
+
+  &__tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px 4px 0;
+    border: 1px solid var(--vp-c-divider);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background-color: var(--vp-code-block-bg);
+  }
+
+  &__tab {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vp-c-text-2);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover {
+      color: var(--vp-c-text-1);
+    }
+
+    &.active {
+      color: var(--vp-c-brand-1);
+      border-bottom-color: var(--vp-c-brand-1);
+    }
+  }
+
+  &__panel {
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+
+    // 面板内的代码块已经自带边框与圆角，这里统一交给外框
+    div[class*='language-'] {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+    }
+  }
+}

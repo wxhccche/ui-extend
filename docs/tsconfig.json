@@ -1,11 +1,11 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client", "@vuepress/client/types"]
+    "types": ["vite/client"]
   },
   "include": [
-    ".vuepress/**/*.ts",
-    ".vuepress/**/*.d.ts",
-    ".vuepress/**/*.vue"
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.d.ts",
+    ".vitepress/**/*.vue"
   ]
 }

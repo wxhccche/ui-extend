@@ -15,6 +15,9 @@
 @[code](@demo/data-table/base.vue)
 :::
 
+<libs-content>
+  <template #element>
+
 ### 配置原始Table组件的各项参数
 
 ::: tip 说明 
@@ -23,9 +26,12 @@
 
 本例设置了Table组件`size`，高度，配置了TableColumn组件的`formatter`, `type`数据，监听了Table组件的`selection-change`事件。可调用Table实例的方法
 
-:::demo table-props
-@[code](@demo/data-table/$LIB_DIR/table-props.vue)
+:::demo table-props no-limit-lib
+@[code](@demo/data-table/table-props.vue)
 :::
+
+  </template>
+</libs-content>
 
 ### 空格填充
 
@@ -33,29 +39,35 @@
 @[code](@demo/data-table/empty-cell.vue)
 :::
 
+<libs-content>
+  <template #element>
+
 ### 自带多(单)选数值绑定
 
 多选功能是基于`Table`组件的多选实现，单选是组件内部实现。
 多选值绑定支持翻页表格，通过选择列对象的`reserveSelection`属性实现。
 单选值可以通过维护分页和选择值来实现页内单选，具体见示例代码。
 
-:::demo selection-values 通过设置`selection`来控制单选或多选。 
-@[code](@demo/data-table/$LIB_DIR/selection-values.vue)
+:::demo selection-values no-limit-lib 通过设置`selection`来控制单选或多选。 
+@[code](@demo/data-table/selection-values.vue)
 :::
 
 ### 基础操作按钮
 
 本例同时也演示了如何利用计算属性来动态设置`columns`属性
 
-:::demo action-btns
-@[code](@demo/data-table/$LIB_DIR/action-btns.vue)
+:::demo action-btns no-limit-lib
+@[code](@demo/data-table/action-btns.vue)
 :::
 
 ### 操作按钮异步请求和表格列自定义组件渲染
 
-:::demo async-action
-@[code](@demo/data-table/$LIB_DIR/async-action.vue)
+:::demo async-action no-limit-lib
+@[code](@demo/data-table/async-action.vue)
 :::
+
+  </template>
+</libs-content>
 
 ::: tip 提示
 Table组件文档参照 <ui-lib-link component="Table"></ui-lib-link>

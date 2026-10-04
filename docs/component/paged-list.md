@@ -25,8 +25,8 @@ Pagination组件文档参照 <ui-lib-link component="Pagination"></ui-lib-link>
 
 ### 分页表格（table）
 
-::: demo table
-@[code](@demo/paged-list/$LIB_DIR/table.vue)
+::: demo table no-limit-lib
+@[code](@demo/paged-list/table.vue)
 :::
   </template>
 </libs-content>

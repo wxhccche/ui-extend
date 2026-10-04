@@ -4,7 +4,8 @@ npm-debug.log*
 node_modules/
 lib/
 dist/
-docs/.vuepress/dist
+docs/.vitepress/dist
+docs/.vitepress/cache
 .env.local
 .env.*.local
 .vscode
@@ -14,3 +15,12 @@ docs/.vuepress/dist
 .temp
 .cache
 .yarn
+
+# 本地接手说明（AI 辅助生成，不入库）
+AGENTS.md
+
+# DSH 沙箱排查产生的权限恢复记录（含回滚脚本），不属于项目本身
+.dsh-acl-report/
+
+# docs 构建时 esbuild 的仓库内临时目录（绕开 Windows 默认 TEMP 的清理失败）
+.tmp-esbuild/

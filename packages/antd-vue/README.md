@@ -1,7 +1,7 @@
 # ui-extend
 
 基于ant-design-vue ui库的二次封装库
-[Doucument](https://wxhccc.github.io/ui-extend/antd-vue)
+[Doucument](https://wxhccche.github.io/ui-extend/antd-vue)
 
 ## 安装
 

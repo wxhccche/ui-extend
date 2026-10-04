@@ -1,7 +1,7 @@
 # ui-extend
 
 基于element-plus ui库的二次封装库
-[Doucument](https://wxhccc.github.io/ui-extend/element)
+[Doucument](https://wxhccche.github.io/ui-extend/element)
 
 ## 安装
 

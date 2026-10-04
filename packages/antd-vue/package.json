@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wxhccc/ui-extend.git"
+    "url": "git+ssh://git@github.com/wxhccche/ui-extend.git"
   },
   "keywords": [
     "ui-extend",
@@ -44,12 +44,12 @@
     "ant-design-vue",
     "utils"
   ],
-  "author": "wxhccc",
+  "author": "wxhccche",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wxhccc/ui-extend/issues"
+    "url": "https://github.com/wxhccche/ui-extend/issues"
   },
-  "homepage": "https://wxhccc.github.io/ui-extend/",
+  "homepage": "https://wxhccche.github.io/ui-extend/",
   "dependencies": {
     "@wxhccc/es-util": "^2.1.0",
     "@wxhccc/ue-shared": "workspace:^",

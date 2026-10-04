@@ -1,7 +1,3 @@
----
-sidebarDepth: 2
----
-
 ## 引入 UiExtend
 
 你可以引入整个UiExtend包，或是根据需要仅引入部分组件。

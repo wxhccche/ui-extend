@@ -1,7 +1,3 @@
----
-sidebarDepth: 3
----
-
 ::: warning 注意
 下文中 `ui-extend` 不是真实包名，指代当前ui库相关的库: {{ CUR_LIB_NAME }}
 :::
