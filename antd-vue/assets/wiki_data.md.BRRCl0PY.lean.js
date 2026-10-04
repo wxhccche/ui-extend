@@ -1,0 +1,1 @@
+import{_ as i,o as a,c as n,aT as l}from"./chunks/framework.D7-FG2No.js";const g=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"wiki/data.md","filePath":"wiki/data.md"}'),h={name:"wiki/data.md"};function p(k,s,t,E,e,d){return a(),n("div",null,[...s[0]||(s[0]=[l("",11)])])}const y=i(h,[["render",p]]);export{g as __pageData,y as default};
